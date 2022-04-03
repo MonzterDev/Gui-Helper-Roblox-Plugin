@@ -30,6 +30,9 @@ function Serialize.Deserialize(property: any, value: string)
     if typeof(property) == "UDim2" then
         local holder = value:gsub("{", ""):gsub("}", ""):split(",")
         return UDim2.new(tonumber(holder[1]),tonumber(holder[2]),tonumber(holder[3]),tonumber(holder[4]))
+    elseif typeof(property) == "UDim" then
+            local holder = value:split(",")
+            return UDim.new(tonumber(holder[1]),tonumber(holder[2]))
     elseif typeof(property) == "Vector2" then
         local holder = value:split(",")
         return Vector2.new(tonumber(holder[1]), tonumber(holder[2]))
@@ -39,6 +42,8 @@ function Serialize.Deserialize(property: any, value: string)
     elseif typeof(property) == "Color3" then
         local holder = value:split(",")
         return Color3.new(tonumber(holder[1]), tonumber(holder[2]), tonumber(holder[3]))
+    elseif typeof(property) == "NumberSequence" then
+        return NumberSequence.new(tonumber(value))
     else
         return value
     end

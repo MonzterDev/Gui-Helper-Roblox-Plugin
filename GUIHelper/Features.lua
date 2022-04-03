@@ -13,46 +13,54 @@ local plugin = script:FindFirstAncestorWhichIsA("Plugin")
 
 local Features = {}
 
-function Features.OffsetToScale(test)
+function Features.OffsetToScale(mode: "Size"| "Position")
     local ViewPortSize = workspace.Camera.ViewportSize
     local objects = SelectionService:Get()
     for _, object: GuiObject in ipairs(objects) do
-        if Helper.HasProperty(object, {"Size", "Position"}) then
-            local size = object.Size
-            if size.X.Scale == 0 and size.Y.Scale == 0 then
+        if Helper.HasProperty(object, {mode}) then
+            if mode == "Size" then
+                local size = object.Size
                 local sizeScaleX, sizeScaleY = size.X.Offset / ViewPortSize.X, size.Y.Offset / ViewPortSize.Y
                 Helper.ModifyProperty(object, {Size = UDim2.fromScale(sizeScaleX, sizeScaleY)})
-            end
-            local position = object.Position
-            if position.X.Scale == 0 and position.Y.Scale == 0 then
+            else
+                local position = object.Position
                 local positionScaleX, positionScaleY = position.X.Offset / ViewPortSize.X, position.Y.Offset / ViewPortSize.Y
                 Helper.ModifyProperty(object, {Position = UDim2.fromScale(positionScaleX, positionScaleY)})
             end
         end
     end
-    Gui.Scale.Visible = false
-    Gui.Offset.Visible = true
+    if mode == "Size" then
+        Gui.OffsetSize.Visible = true
+        Gui.ScaleSize.Visible = false
+    else
+        Gui.OffsetPosition.Visible = true
+        Gui.ScalePosition.Visible = false
+    end
 end
 
-function Features.ScaleToOffset()
+function Features.ScaleToOffset(mode: "Size"| "Position")
     local ViewPortSize = workspace.Camera.ViewportSize
     local objects = SelectionService:Get()
     for _, object: GuiObject in ipairs(objects) do
-        if Helper.HasProperty(object, {"Size", "Position"}) then
-            local scale = object.Size
-            if scale.X.Offset == 0 and scale.Y.Offset == 0 then
-                local sizeOffsetX, sizeOffsetY = scale.X.Scale * ViewPortSize.X, scale.Y.Scale * ViewPortSize.Y
+        if Helper.HasProperty(object, {mode}) then
+            if mode == "Size" then
+                local size = object.Size
+                local sizeOffsetX, sizeOffsetY = size.X.Scale * ViewPortSize.X, size.Y.Scale * ViewPortSize.Y
                 Helper.ModifyProperty(object, {Size = UDim2.fromOffset(sizeOffsetX, sizeOffsetY)})
-            end
-            local position = object.Position
-            if position.X.Offset == 0 and position.Y.Offset == 0 then
+            else
+                local position = object.Position
                 local positionOffsetX, positionOffsetY = position.X.Scale * ViewPortSize.X, position.Y.Scale * ViewPortSize.Y
                 Helper.ModifyProperty(object, {Position = UDim2.fromOffset(positionOffsetX, positionOffsetY)})
             end
         end
     end
-    Gui.Offset.Visible = false
-    Gui.Scale.Visible = true
+    if mode == "Size" then
+        Gui.OffsetSize.Visible = false
+        Gui.ScaleSize.Visible = true
+    else
+        Gui.OffsetPosition.Visible = false
+        Gui.ScalePosition.Visible = false
+    end
 end
 
 
@@ -145,6 +153,7 @@ local function setDefaults(object: Instance)
     if hasDefaults(object, DefaultGuiObjects[object.ClassName]) then
         for property, _ in pairs(Settings.CachedSettings[object.ClassName]) do
             if property ~= "Parent" and property ~= "RootLocalizationTable" and Settings.CachedSettings[object.ClassName][property] ~= nil then
+                print(Settings.CachedSettings[object.ClassName][property])
                 object[property] = Serialization.Deserialize(object[property], Settings.CachedSettings[object.ClassName][property])
             end
         end

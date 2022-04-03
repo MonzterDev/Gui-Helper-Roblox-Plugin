@@ -15,9 +15,11 @@ local helpList = {
     Center = "Sets the AnchorPoint to .5, .5 & Position to .5, 0, .5, 0",
     Copy = "Copies the properties from the selected Object. (Do not select multiple Objects!)",
     Export = "Exports all selected Gui Elements into a Script.",
-    Offset = "Converts the Size & Position from Scale to Offset.",
+    OffsetSize = "Converts the Size from Scale to Offset.",
+    OffsetPosition = "Converts the Position from Scale to Offset.",
+    ScaleSize = "Converts the Size from Offset to Scale.",
+    ScalePosition = "Converts the Position from Offset to Scale.",
     Paste = "Replaces the selected Object's properties which are shared with the Object's properties that was copied.",
-    Scale = "Converts the Size & Position from Offset to Scale.",
     Default = "Saves the selected Object's properties as the defeault for whenever this Object type is created.",
 }
 
@@ -69,16 +71,25 @@ end
 local function displayButtons(selected: table, isGuiObject: boolean)
     local result, objectWithProperty = oneSelectedObjectHasProperty(selected, {"Size", "Position"})
     if isGuiObject and result == true then
-        if objectWithProperty.Size.Y.Offset == 0 or objectWithProperty.Size.X.Offset == 0 then
-            Gui.Offset.Visible = true
-            Gui.Scale.Visible = false
+        if objectWithProperty.Size.Y.Offset > 0 or objectWithProperty.Size.X.Offset > 0 then
+            Gui.OffsetSize.Visible = false
+            Gui.ScaleSize.Visible = true
         else
-            Gui.Offset.Visible = true
-            Gui.Scale.Visible = false
+            Gui.OffsetSize.Visible = true
+            Gui.ScaleSize.Visible = false
+        end
+        if objectWithProperty.Position.Y.Offset > 0 or objectWithProperty.Position.X.Offset > 0 then
+            Gui.OffsetPosition.Visible = false
+            Gui.ScalePosition.Visible = true
+        else
+            Gui.OffsetPosition.Visible = true
+            Gui.ScalePosition.Visible = false
         end
     else
-        Gui.Offset.Visible = false
-        Gui.Scale.Visible = false
+        Gui.OffsetSize.Visible = false
+        Gui.OffsetPosition.Visible = false
+        Gui.ScaleSize.Visible = false
+        Gui.ScalePosition.Visible = false
     end
     Gui.Center.Visible = oneSelectedObjectHasProperty(selected, {"AnchorPoint", "Position"})
     Gui.Paste.Visible = if Backend.PropertyClipboard ~= "" and isGuiObject == true then true else false
@@ -89,8 +100,18 @@ end
 
 Backend.GenerateHelp()
 
-Gui.Scale.MouseButton1Click:Connect(Features.OffsetToScale)
-Gui.Offset.MouseButton1Click:Connect(Features.ScaleToOffset)
+Gui.ScaleSize.MouseButton1Click:Connect(function()
+    Features.OffsetToScale("Size")
+end)
+Gui.ScalePosition.MouseButton1Click:Connect(function()
+    Features.OffsetToScale("Position")
+end)
+Gui.OffsetSize.MouseButton1Click:Connect(function()
+    Features.ScaleToOffset("Size")
+end)
+Gui.OffsetPosition.MouseButton1Click:Connect(function()
+    Features.ScaleToOffset("Position")
+end)
 Gui.Center.MouseButton1Click:Connect(Features.CenterElements)
 Gui.Export.MouseButton1Click:Connect(Features.ExportGui)
 Gui.Copy.MouseButton1Click:Connect(Features.CopyProperties)

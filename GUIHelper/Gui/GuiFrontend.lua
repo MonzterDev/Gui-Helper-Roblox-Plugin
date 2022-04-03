@@ -95,6 +95,7 @@ Gui.ButtonTemplate.Style = Enum.ButtonStyle.Custom
 Gui.ButtonTemplate.Position = UDim2.new(0.422233522, 0, 0.0224299058, 0)
 Gui.ButtonTemplate.Size = UDim2.new(0, 200, 0, 50)
 Gui.ButtonTemplate.BorderSizePixel = 0
+Gui.ButtonTemplate.Visible = false
 Gui.ButtonTemplate.BackgroundColor3 = Color3.new(0.7686274647712708,0.8588235378265381,0.9803921580314636)
 
 Gui.Help = Instance.new("TextButton")
@@ -126,8 +127,10 @@ Gui.Center = generateButton("Center", "Center Align")
 Gui.Copy = generateButton("Copy", "Copy Properties")
 Gui.Export = generateButton("Export", "Export")
 Gui.Paste = generateButton("Paste", "Paste Properties")
-Gui.Offset = generateButton("Offset", "Convert to Offset")
-Gui.Scale = generateButton("Scale", "Convert to Scale")
+Gui.OffsetSize = generateButton("Offset Size", "Convert Size to Offset")
+Gui.OffsetPosition = generateButton("Offset Position", "Convert Position to Offset")
+Gui.ScaleSize = generateButton("Scale Size", "Convert Size to Scale")
+Gui.ScalePosition = generateButton("Scale Position", "Convert Position to Scale")
 Gui.Default = generateButton("Default", "Set Properties as Default")
 
 return Gui
