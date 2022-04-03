@@ -22,22 +22,23 @@ function Settings.LoadData()
             end
         end
     end
-    print(Settings.CachedSettings)
 end
 
-function Settings.SaveData()
-    print(UserSettingsModule)
-    print(Settings.CachedSettings)
-    for setting, settingValue in pairs(DefaultUserSettings) do
-        plugin:SetSetting(setting, Settings.CachedSettings[setting])
-    end
-    for object, properties in pairs(DefaultGuiObjects) do
-        for property, propertyValue in pairs(properties) do
-            if propertyValue ~= "" then
-                plugin:SetSetting(object.."_"..property, tostring(Settings.CachedSettings[object][property]))
+function Settings.SaveData(objects: boolean)
+    if objects == false then
+        for setting, settingValue in pairs(DefaultUserSettings) do
+            plugin:SetSetting(setting, Settings.CachedSettings[setting])
+        end
+    else
+        for object, properties in pairs(DefaultGuiObjects) do
+            for property, propertyValue in pairs(properties) do
+                if propertyValue ~= "" then
+                    plugin:SetSetting(object.."_"..property, tostring(Settings.CachedSettings[object][property]))
+                end
             end
         end
     end
+    print("Plugin data saved!")
 end
 
 function Settings.GenerateSettings()
@@ -61,7 +62,7 @@ UserSettingsScript.Changed:Connect(function(changed)
                 Settings.CachedSettings[settingArray.Name] = settingArray.Value
             end
         end
-        Settings.SaveData()
+        Settings.SaveData(false)
     end
 end)
 

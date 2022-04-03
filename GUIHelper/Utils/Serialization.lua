@@ -27,9 +27,6 @@ function Serialize.serialize(value: any)
 end
 
 function Serialize.Deserialize(property: any, value: string)
-    print(typeof(property))
-    print(typeof(value))
-    print(value)
     if typeof(property) == "UDim2" then
         local holder = value:gsub("{", ""):gsub("}", ""):split(",")
         return UDim2.new(tonumber(holder[1]),tonumber(holder[2]),tonumber(holder[3]),tonumber(holder[4]))
@@ -38,7 +35,6 @@ function Serialize.Deserialize(property: any, value: string)
         return Vector2.new(tonumber(holder[1]), tonumber(holder[2]))
     elseif typeof(property) == "EnumItem" or typeof(property) == "Enum" or typeof(property) == "Enums" then
         local holder = value:split(".")
-        print(holder,holder[3])
         return holder[3]
     elseif typeof(property) == "Color3" then
         local holder = value:split(",")

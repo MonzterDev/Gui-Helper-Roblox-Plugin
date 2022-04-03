@@ -120,10 +120,8 @@ function Features.PasteProperties()
 end
 
 local function hasDefaults(object: Instance, defaults: table)
-    -- print(defaults)
     for property, value in pairs(defaults) do
         if value ~= "" and typeof(value) ~= "Color3" and typeof(value) ~= "NumberSequence" and object[property] ~= value then
-            print(property, value, object[property])
             return false
         end
     end
@@ -140,17 +138,13 @@ function Features.SetAsDefault()
             print(object.Name.."s properties set as the default for all "..object.ClassName.."!")
         end
     end
-    Settings.SaveData()
+    Settings.SaveData(true)
 end
 
 local function setDefaults(object: Instance)
-    print(object.ClassName, object)
     if hasDefaults(object, DefaultGuiObjects[object.ClassName]) then
-        -- print(true, Settings.CachedSettings[object.ClassName])
         for property, _ in pairs(Settings.CachedSettings[object.ClassName]) do
-            print(property, Settings.CachedSettings[object.ClassName][property], typeof(Settings.CachedSettings[object.ClassName][property]))
             if property ~= "Parent" and property ~= "RootLocalizationTable" and Settings.CachedSettings[object.ClassName][property] ~= nil then
-                -- Helper.ModifyProperty(object, {property = Serialization.Deserialize(object[property], Settings.CachedSettings[object.ClassName][property])})
                 object[property] = Serialization.Deserialize(object[property], Settings.CachedSettings[object.ClassName][property])
             end
         end
@@ -159,7 +153,6 @@ end
 
 function Features.SetDefaultProperties(descendant: Instance)
     local isGuiObject = Helper.IsAGuiObject({descendant})
-    print(isGuiObject)
     if isGuiObject == true and plugin:GetSetting("Update_New_"..descendant.ClassName) == true then
         setDefaults(descendant)
     end

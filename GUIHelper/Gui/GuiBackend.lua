@@ -3,7 +3,6 @@ local SelectionService = game:GetService("Selection")
 local UserSettingsScript = script.Parent.Parent.UserData.Settings
 
 local Gui = require(script.Parent.GuiFrontend)
-local Settings = require(script.Parent.Parent.Utils.Settings)
 local Features = require(script.Parent.Parent.Features)
 local Helper = require(script.Parent.Parent.Utils.Helper)
 
@@ -61,15 +60,16 @@ end
 local function oneSelectedObjectHasProperty(objects: table, properties: table)
     for _ , object in ipairs(objects) do
         if Helper.HasProperty(object, properties) then
-            return true
+            return true, object
         end
     end
     return false
 end
 
 local function displayButtons(selected: table, isGuiObject: boolean)
-    if isGuiObject and oneSelectedObjectHasProperty(selected, {"Size", "Position"}) then
-        if selected[1].Size.Y.Offset == 0 or selected[1].Size.X.Offset == 0 then
+    local result, objectWithProperty = oneSelectedObjectHasProperty(selected, {"Size", "Position"})
+    if isGuiObject and result == true then
+        if objectWithProperty.Size.Y.Offset == 0 or objectWithProperty.Size.X.Offset == 0 then
             Gui.Offset.Visible = true
             Gui.Scale.Visible = false
         else
