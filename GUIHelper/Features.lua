@@ -13,7 +13,7 @@ local plugin = script:FindFirstAncestorWhichIsA("Plugin")
 
 local Features = {}
 
-function Features.OffsetToScale(mode: "Size"| "Position")
+function Features.OffsetToScale(mode: "Size"|"Position")
     local ViewPortSize = workspace.Camera.ViewportSize
     local objects = SelectionService:Get()
     for _, object: GuiObject in ipairs(objects) do
