@@ -10,35 +10,38 @@ local Settings = {}
 Settings.CachedSettings = {}
 
 function Settings.LoadData()
-    Settings.CachedSettings = {}
-    for key, value in pairs(DefaultUserSettings) do
-            Settings.CachedSettings[key] = if plugin:GetSetting(key) ~= nil then plugin:GetSetting(key) else value
-    end
-    for key, value in pairs(DefaultGuiObjects) do
-        Settings.CachedSettings[key] = {}
-        for property, propertyValue in pairs(value) do
-            if propertyValue ~= "" then
-                Settings.CachedSettings[key][property] = if plugin:GetSetting(key.."_"..property) ~= nil and plugin:GetSetting(key.."_"..property) ~= "nil" then plugin:GetSetting(key.."_"..property) else propertyValue
-            end
+    task.spawn(function()
+        Settings.CachedSettings = {}
+        for key, value in pairs(DefaultUserSettings) do
+                Settings.CachedSettings[key] = if plugin:GetSetting(key) ~= nil then plugin:GetSetting(key) else value
         end
-    end
-end
-
-function Settings.SaveData(objects: boolean)
-    if objects == false then
-        for setting, settingValue in pairs(DefaultUserSettings) do
-            plugin:SetSetting(setting, Settings.CachedSettings[setting])
-        end
-    else
-        for object, properties in pairs(DefaultGuiObjects) do
-            for property, propertyValue in pairs(properties) do
+        for key, value in pairs(DefaultGuiObjects) do
+            Settings.CachedSettings[key] = {}
+            for property, propertyValue in pairs(value) do
                 if propertyValue ~= "" then
-                    plugin:SetSetting(object.."_"..property, tostring(Settings.CachedSettings[object][property]))
+                    Settings.CachedSettings[key][property] = if plugin:GetSetting(key.."_"..property) ~= nil and plugin:GetSetting(key.."_"..property) ~= "nil" then plugin:GetSetting(key.."_"..property) else propertyValue
                 end
             end
         end
-    end
-    print("Plugin data saved!")
+    end)
+end
+
+function Settings.SaveData(objects: boolean)
+    task.spawn(function()
+        if objects == false then
+            for setting, settingValue in pairs(DefaultUserSettings) do
+                plugin:SetSetting(setting, Settings.CachedSettings[setting])
+            end
+        else
+            for object, properties in pairs(DefaultGuiObjects) do
+                for property, propertyValue in pairs(properties) do
+                    if propertyValue ~= "" then
+                        plugin:SetSetting(object.."_"..property, tostring(Settings.CachedSettings[object][property]))
+                    end
+                end
+            end
+        end
+    end)
 end
 
 function Settings.GenerateSettings()

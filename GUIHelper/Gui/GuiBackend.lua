@@ -72,45 +72,41 @@ local function displayButtons(selected: table, isGuiObject: boolean)
     local result, objectWithProperty = oneSelectedObjectHasProperty(selected, {"Size", "Position"})
     if isGuiObject and result == true then
         if objectWithProperty.Size.Y.Offset > 0 or objectWithProperty.Size.X.Offset > 0 then
-            Gui.OffsetSize.Visible = false
-            Gui.ScaleSize.Visible = true
+            Gui.ScaleSize.Text = "Scale Size"
         else
-            Gui.OffsetSize.Visible = true
-            Gui.ScaleSize.Visible = false
+            Gui.ScaleSize.Text = "Offset Size"
         end
         if objectWithProperty.Position.Y.Offset > 0 or objectWithProperty.Position.X.Offset > 0 then
-            Gui.OffsetPosition.Visible = false
-            Gui.ScalePosition.Visible = true
+            Gui.ScalePosition.Text = "Scale Position"
         else
-            Gui.OffsetPosition.Visible = true
-            Gui.ScalePosition.Visible = false
+            Gui.ScalePosition.Text = "Offset Position"
         end
     else
-        Gui.OffsetSize.Visible = false
-        Gui.OffsetPosition.Visible = false
         Gui.ScaleSize.Visible = false
         Gui.ScalePosition.Visible = false
     end
     Gui.Center.Visible = oneSelectedObjectHasProperty(selected, {"AnchorPoint", "Position"})
     Gui.Paste.Visible = if Backend.PropertyClipboard ~= "" and isGuiObject == true then true else false
-    Gui.GeneralTitle.Text = if isGuiObject == false then "Select a Gui object!" else "General"
+    Gui.Frame.Title.Text = if isGuiObject == false then "Select a Gui object!" else "Gui Helper"
     Gui.Default.Visible = isGuiObject
 end
 
 
-Backend.GenerateHelp()
+-- Backend.GenerateHelp()
 
 Gui.ScaleSize.MouseButton1Click:Connect(function()
-    Features.OffsetToScale("Size")
+    if Gui.ScaleSize.Text:find("Offset") then
+        Features.ScaleToOffset("Size")
+    else
+        Features.OffsetToScale("Size")
+    end
 end)
 Gui.ScalePosition.MouseButton1Click:Connect(function()
-    Features.OffsetToScale("Position")
-end)
-Gui.OffsetSize.MouseButton1Click:Connect(function()
-    Features.ScaleToOffset("Size")
-end)
-Gui.OffsetPosition.MouseButton1Click:Connect(function()
-    Features.ScaleToOffset("Position")
+    if Gui.ScaleSize.Text:find("Offset") then
+        Features.ScaleToOffset("Position")
+    else
+        Features.OffsetToScale("Position")
+    end
 end)
 Gui.Center.MouseButton1Click:Connect(Features.CenterElements)
 Gui.Export.MouseButton1Click:Connect(Features.ExportGui)

@@ -30,11 +30,9 @@ function Features.OffsetToScale(mode: "Size"|"Position")
         end
     end
     if mode == "Size" then
-        Gui.OffsetSize.Visible = true
-        Gui.ScaleSize.Visible = false
+        Gui.ScaleSize.Text = "Offset Size"
     else
-        Gui.OffsetPosition.Visible = true
-        Gui.ScalePosition.Visible = false
+        Gui.ScalePosition.Text = "Offset Position"
     end
 end
 
@@ -55,11 +53,9 @@ function Features.ScaleToOffset(mode: "Size"| "Position")
         end
     end
     if mode == "Size" then
-        Gui.OffsetSize.Visible = false
-        Gui.ScaleSize.Visible = true
+        Gui.ScaleSize.Text = "Scale Size"
     else
-        Gui.OffsetPosition.Visible = false
-        Gui.ScalePosition.Visible = false
+        Gui.ScalePosition.Text = "Scale Position"
     end
 end
 
@@ -146,14 +142,13 @@ function Features.SetAsDefault()
             print(object.Name.."s properties set as the default for all "..object.ClassName.."!")
         end
     end
-    Settings.SaveData(true)
+    Settings.SaveData(false)
 end
 
 local function setDefaults(object: Instance)
     if hasDefaults(object, DefaultGuiObjects[object.ClassName]) then
         for property, _ in pairs(Settings.CachedSettings[object.ClassName]) do
             if property ~= "Parent" and property ~= "RootLocalizationTable" and Settings.CachedSettings[object.ClassName][property] ~= nil then
-                print(Settings.CachedSettings[object.ClassName][property])
                 object[property] = Serialization.Deserialize(object[property], Settings.CachedSettings[object.ClassName][property])
             end
         end
